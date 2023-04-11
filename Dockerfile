@@ -1,23 +1,19 @@
-# 使用 Nginx 作为基础镜像
-FROM nginx:latest
+FROM tsl0922/ttyd:latest
 
-# 安装 ttyd 和 nginx
-RUN apk add --no-cache ttyd nginx
+# Install nginx
+RUN apk update && apk add nginx
 
-# 将 ttyd 添加到 PATH 环境变量中
-ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
+# Configure nginx to proxy ttyd to /shell
+RUN echo "server { \
+    listen 80; \
+    location /shell { \
+        proxy_pass http://localhost:7681; \
+        proxy_http_version 1.1; \
+        proxy_set_header Upgrade \$http_upgrade; \
+        proxy_set_header Connection "Upgrade"; \
+        proxy_set_header Host \$host; \
+    } \
+}" > /etc/nginx/conf.d/default.conf
 
-# 将 nginx 配置文件复制到容器中
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# 将应用程序代码复制到容器中
-COPY . /app
-
-# 设置工作目录
-WORKDIR /app
-
-# 安装依赖项
-RUN npm install
-
-# 启动 ttyd 和 nginx
-CMD ["bash", "-c", "ttyd bash & nginx -g 'daemon off;'"]
+# Start nginx and ttyd
+CMD nginx && ttyd bash
