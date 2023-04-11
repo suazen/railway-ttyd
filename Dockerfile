@@ -2,8 +2,8 @@
 FROM node:14
 
 # 安装 ttyd 和 nginx
-RUN apt-get update && \
-    apt-get install -y ttyd nginx
+RUN apk update && \
+    apk add ttyd nginx
 
 # 将 ttyd 添加到 PATH 环境变量中
 ENV PATH="/node_modules/.bin:${PATH}"
