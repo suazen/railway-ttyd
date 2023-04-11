@@ -1,11 +1,11 @@
-# 使用 Node.js 14 作为基础镜像
-FROM node:14-alpine
+# 使用 Nginx 作为基础镜像
+FROM nginx:latest
 
 # 安装 ttyd 和 nginx
-RUN apk add --no-cache ttyd nginx
+RUN apk add --no-cache --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community ttyd nginx
 
 # 将 ttyd 添加到 PATH 环境变量中
-ENV PATH="/node_modules/.bin:${PATH}"
+ENV PATH="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:${PATH}"
 
 # 将 nginx 配置文件复制到容器中
 COPY nginx.conf /etc/nginx/nginx.conf
