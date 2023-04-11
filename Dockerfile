@@ -1,9 +1,8 @@
 # 使用 Node.js 14 作为基础镜像
-FROM node:14
+FROM node:14-alpine
 
 # 安装 ttyd 和 nginx
-RUN apk update && \
-    apk add ttyd nginx
+RUN apk add --no-cache ttyd nginx
 
 # 将 ttyd 添加到 PATH 环境变量中
 ENV PATH="/node_modules/.bin:${PATH}"
